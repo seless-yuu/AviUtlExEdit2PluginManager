@@ -1,0 +1,1 @@
+# AviUtlExEdit2PluginManager
