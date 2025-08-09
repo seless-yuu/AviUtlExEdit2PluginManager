@@ -1,0 +1,106 @@
+package main
+
+import (
+	"aviutl-plugin-manager/pkg/library"
+	"aviutl-plugin-manager/pkg/profile"
+	"context"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+)
+
+// App struct
+type App struct {
+	ctx         context.Context
+	libraryDir  string
+	profilesDir string
+}
+
+// NewApp creates a new App application struct
+func NewApp() *App {
+	return &App{}
+}
+
+// startup is called when the app starts. The context is saved
+// so we can call the runtime methods
+func (a *App) startup(ctx context.Context) {
+	a.ctx = ctx
+
+	// Setup config directories
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(fmt.Sprintf("could not get user home directory: %v", err))
+	}
+	configDir := filepath.Join(homeDir, ".config", "aviutl-plugin-manager")
+
+	// Setup library directory
+	a.libraryDir = filepath.Join(configDir, "library")
+	err = os.MkdirAll(a.libraryDir, os.ModePerm)
+	if err != nil {
+		panic(fmt.Sprintf("could not create library directory: %v", err))
+	}
+
+	// Setup profiles directory
+	a.profilesDir = filepath.Join(configDir, "profiles")
+	err = os.MkdirAll(a.profilesDir, os.ModePerm)
+	if err != nil {
+		panic(fmt.Sprintf("could not create profiles directory: %v", err))
+	}
+}
+
+// Greet returns a greeting for the given name
+func (a *App) Greet(name string) string {
+	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+// GetPlugins returns the list of installed plugins.
+func (a *App) GetPlugins() ([]library.Plugin, error) {
+	return library.ListPlugins(a.libraryDir)
+}
+
+// GetProfiles returns the list of available profiles.
+func (a *App) GetProfiles() ([]profile.Profile, error) {
+	return profile.ListProfiles(a.profilesDir)
+}
+
+// SaveProfile saves a profile.
+func (a *App) SaveProfile(p profile.Profile) error {
+	return profile.SaveProfile(a.profilesDir, p)
+}
+
+// ActivateProfile activates the given profile.
+func (a *App) ActivateProfile(profileName string, aviutlPath string) error {
+	profiles, err := a.GetProfiles()
+	if err != nil {
+		return fmt.Errorf("could not list profiles to activate: %w", err)
+	}
+	var p *profile.Profile
+	for i := range profiles {
+		if profiles[i].Name == profileName {
+			p = &profiles[i]
+			break
+		}
+	}
+	if p == nil {
+		return fmt.Errorf("profile '%s' not found", profileName)
+	}
+	return profile.ActivateProfile(*p, a.libraryDir, aviutlPath)
+}
+
+// AddPluginFromZip adds a new plugin from a zip file.
+func (a *App) AddPluginFromZip(zipPath string) (*library.Plugin, error) {
+	return library.AddPluginFromZip(a.libraryDir, zipPath)
+}
+
+// LaunchAviUtl starts the AviUtl executable.
+func (a *App) LaunchAviUtl(aviutlDir string) error {
+	aviutlExePath := filepath.Join(aviutlDir, "aviutl2.exe")
+	if _, err := os.Stat(aviutlExePath); os.IsNotExist(err) {
+		return fmt.Errorf("aviutl2.exe not found at %s", aviutlExePath)
+	}
+
+	cmd := exec.Command(aviutlExePath)
+	cmd.Dir = aviutlDir // Set the working directory to the AviUtl folder
+	return cmd.Start()
+}
