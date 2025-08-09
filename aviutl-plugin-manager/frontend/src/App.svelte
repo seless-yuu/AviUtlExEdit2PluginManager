@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import { GetPlugins, GetProfiles, SaveProfile, ActivateProfile, LaunchAviUtl, AddPluginFromZip } from '../wailsjs/go/main/App.js';
-  import * as runtime from '../wailsjs/runtime/runtime.js';
+  // Import the new SelectFile method and remove the old runtime import
+  import { GetPlugins, GetProfiles, SaveProfile, ActivateProfile, LaunchAviUtl, AddPluginFromZip, SelectFile } from '../wailsjs/go/main/App.js';
 
   let pluginsPromise;
   let profiles = [];
@@ -75,13 +75,8 @@
   }
 
   function addPlugin() {
-    console.log("addPlugin function called");
-    console.log("Inspecting runtime object:", runtime);
-    runtime.openFileDialog({ // Corrected to camelCase
-        title: "Select Plugin Zip File",
-        filters: [{ displayName: "Zip Archives", pattern: "*.zip" }]
-    }).then(zipPath => {
-        console.log("File dialog returned:", zipPath);
+    // Call the new Go method
+    SelectFile().then(zipPath => {
         if (zipPath) {
             setStatus("Adding plugin...");
             AddPluginFromZip(zipPath)
@@ -89,15 +84,9 @@
                     setStatus(`Plugin '${newPlugin.name}' added successfully!`, 3000);
                     refreshPlugins();
                 })
-                .catch(err => {
-                    console.error("AddPluginFromZip error:", err);
-                    handleError(err);
-                });
+                .catch(handleError);
         }
-    }).catch(err => {
-        console.error("OpenFileDialog error:", err);
-        handleError(err);
-    });
+    }).catch(handleError);
   }
 
   function setStatus(message, clearAfter = 0) {

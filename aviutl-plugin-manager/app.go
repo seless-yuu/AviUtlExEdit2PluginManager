@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -103,4 +105,21 @@ func (a *App) LaunchAviUtl(aviutlDir string) error {
 	cmd := exec.Command(aviutlExePath)
 	cmd.Dir = aviutlDir // Set the working directory to the AviUtl folder
 	return cmd.Start()
+}
+
+// SelectFile prompts the user to select a file and returns the path.
+func (a *App) SelectFile() (string, error) {
+	selection, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Select Plugin Zip File",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "Zip Archives (*.zip)",
+				Pattern:     "*.zip",
+			},
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return selection, nil
 }
