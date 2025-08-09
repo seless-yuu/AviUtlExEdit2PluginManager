@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  // Import the new SelectFile method and remove the old runtime import
   import { GetPlugins, GetProfiles, SaveProfile, ActivateProfile, LaunchAviUtl, AddPluginFromZip, SelectFile } from '../wailsjs/go/main/App.js';
 
   let pluginsPromise;
@@ -74,6 +75,7 @@
   }
 
   function addPlugin() {
+    // Call the new Go method
     SelectFile().then(zipPath => {
         if (zipPath) {
             setStatus("Adding plugin...");
