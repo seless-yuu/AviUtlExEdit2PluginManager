@@ -76,9 +76,9 @@ func SaveProfile(profilesDir string, profile Profile) error {
 
 // ActivateProfile creates symlinks for all enabled plugins in a profile.
 // It first removes any old symlinks created by this manager.
-func ActivateProfile(p Profile, libraryDir, aviutlDir string) error {
+func ActivateProfile(p Profile, libraryDir, pluginDestDir string) error {
 	// This is a simplistic cleanup. A more robust solution would track created symlinks.
-	// For now, we assume any .auf, .aui, .auo, etc. in aviutlDir could be a symlink to clean.
+	// For now, we assume any .auf, .aui, .auo, etc. in pluginDestDir could be a symlink to clean.
 	// This is dangerous and needs a better implementation, maybe by checking if a file is a symlink
 	// and if it points to our library.
 
@@ -109,7 +109,7 @@ func ActivateProfile(p Profile, libraryDir, aviutlDir string) error {
 		pluginDir := filepath.Join(libraryDir, plugin.ID)
 		for _, file := range plugin.Files {
 			sourcePath := filepath.Join(pluginDir, file)
-			destPath := filepath.Join(aviutlDir, file)
+			destPath := filepath.Join(pluginDestDir, file)
 
 			// Ensure the destination directory exists (for plugins in subfolders like /plugins)
 			if err := os.MkdirAll(filepath.Dir(destPath), os.ModePerm); err != nil {

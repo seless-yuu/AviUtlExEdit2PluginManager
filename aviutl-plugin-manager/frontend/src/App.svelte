@@ -8,6 +8,7 @@
   let selectedProfileName = '';
   let selectedProfile = null;
   let aviutlPath = '';
+  let pluginPath = ''; // New variable for the plugin directory
   let statusMessage = '';
   let errorMessage = '';
 
@@ -52,19 +53,21 @@
   }
 
   function activate() {
-    if (!selectedProfile || !aviutlPath) {
-      handleError("Please select a profile and specify the AviUtl path.");
+    // Activation now uses pluginPath
+    if (!selectedProfile || !pluginPath) {
+      handleError("Please select a profile and specify the Plugin Directory path.");
       return;
     }
     setStatus("Activating profile...");
-    ActivateProfile(selectedProfile.name, aviutlPath)
+    ActivateProfile(selectedProfile.name, pluginPath)
       .then(() => setStatus("Profile activated successfully!", 3000))
       .catch(handleError);
   }
 
   function launch() {
+    // Launching still uses aviutlPath
     if (!aviutlPath) {
-        handleError("Please specify the AviUtl path.");
+        handleError("Please specify the AviUtl Directory path.");
         return;
     }
     setStatus("Launching AviUtl...");
@@ -74,10 +77,12 @@
   }
 
   function addPlugin() {
+    console.log("addPlugin function called");
     runtime.OpenFileDialog({
         title: "Select Plugin Zip File",
         filters: [{ displayName: "Zip Archives", pattern: "*.zip" }]
     }).then(zipPath => {
+        console.log("File dialog returned:", zipPath);
         if (zipPath) {
             setStatus("Adding plugin...");
             AddPluginFromZip(zipPath)
@@ -85,9 +90,15 @@
                     setStatus(`Plugin '${newPlugin.name}' added successfully!`, 3000);
                     refreshPlugins(); // Refresh the list
                 })
-                .catch(handleError);
+                .catch(err => {
+                    console.error("AddPluginFromZip error:", err);
+                    handleError(err);
+                });
         }
-    }).catch(handleError);
+    }).catch(err => {
+        console.error("OpenFileDialog error:", err);
+        handleError(err);
+    });
   }
 
   function setStatus(message, clearAfter = 0) {
@@ -129,10 +140,18 @@
         {/if}
       </select>
     </div>
-    <div class="control-group">
-        <label for="aviutl-path">AviUtl Directory:</label>
-        <input type="text" id="aviutl-path" bind:value={aviutlPath} placeholder="C:\path\to\aviutl2 (exe is in this folder)" />
-        <button on:click={activate} disabled={!selectedProfile || !aviutlPath}>Activate</button>
+    <div class="control-group-paths">
+        <div class="path-input">
+            <label for="aviutl-path">AviUtl Directory:</label>
+            <input type="text" id="aviutl-path" bind:value={aviutlPath} placeholder="C:\path\to\aviutl2 (exe is here)" />
+        </div>
+        <div class="path-input">
+            <label for="plugin-path">Plugin Directory:</label>
+            <input type="text" id="plugin-path" bind:value={pluginPath} placeholder="C:\path\to\aviutl2\plugins" />
+        </div>
+    </div>
+    <div class="control-group-buttons">
+        <button on:click={activate} disabled={!selectedProfile || !pluginPath}>Activate</button>
         <button on:click={launch} disabled={!aviutlPath}>Launch</button>
     </div>
   </div>
@@ -203,7 +222,7 @@
   main {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 1.5em;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     color: var(--text-color);
   }
@@ -214,24 +233,45 @@
   .error { color: var(--error-color); font-weight: bold; }
 
   .top-controls {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
     align-items: center;
     margin-bottom: 2rem;
     background-color: var(--light-gray);
     padding: 1rem;
     border-radius: 8px;
   }
-  .control-group { display: flex; align-items: center; gap: 0.5rem; }
-  label { font-weight: 500; }
+  .control-group, .control-group-paths, .control-group-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .control-group-paths {
+      flex-direction: column;
+      align-items: stretch;
+  }
+  .path-input {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+      gap: 0.5rem;
+  }
+  .control-group-buttons {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+  }
+  label { font-weight: 500; text-align: right; }
 
   select, input[type="text"], button {
     padding: 0.5rem;
     border: 1px solid var(--dark-gray);
     border-radius: 4px;
     font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
   }
-  input[type="text"] { min-width: 300px; }
 
   button {
     background-color: var(--primary-color);
@@ -250,7 +290,7 @@
     margin-bottom: 1rem;
   }
   .list-header h2 { margin: 0; }
-  .list-header button { background-color: var(--secondary-color); }
+  .list-header button { background-color: var(--secondary-color); width: auto;}
 
   table {
     width: 100%;

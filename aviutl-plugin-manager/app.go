@@ -70,7 +70,7 @@ func (a *App) SaveProfile(p profile.Profile) error {
 }
 
 // ActivateProfile activates the given profile.
-func (a *App) ActivateProfile(profileName string, aviutlPath string) error {
+func (a *App) ActivateProfile(profileName string, pluginInstallPath string) error {
 	profiles, err := a.GetProfiles()
 	if err != nil {
 		return fmt.Errorf("could not list profiles to activate: %w", err)
@@ -85,7 +85,7 @@ func (a *App) ActivateProfile(profileName string, aviutlPath string) error {
 	if p == nil {
 		return fmt.Errorf("profile '%s' not found", profileName)
 	}
-	return profile.ActivateProfile(*p, a.libraryDir, aviutlPath)
+	return profile.ActivateProfile(*p, a.libraryDir, pluginInstallPath)
 }
 
 // AddPluginFromZip adds a new plugin from a zip file.
