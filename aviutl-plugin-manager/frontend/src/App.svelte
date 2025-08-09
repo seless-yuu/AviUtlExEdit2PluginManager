@@ -8,7 +8,7 @@
   let selectedProfileName = '';
   let selectedProfile = null;
   let aviutlPath = '';
-  let pluginPath = ''; // New variable for the plugin directory
+  let pluginPath = '';
   let statusMessage = '';
   let errorMessage = '';
 
@@ -53,7 +53,6 @@
   }
 
   function activate() {
-    // Activation now uses pluginPath
     if (!selectedProfile || !pluginPath) {
       handleError("Please select a profile and specify the Plugin Directory path.");
       return;
@@ -65,7 +64,6 @@
   }
 
   function launch() {
-    // Launching still uses aviutlPath
     if (!aviutlPath) {
         handleError("Please specify the AviUtl Directory path.");
         return;
@@ -78,7 +76,7 @@
 
   function addPlugin() {
     console.log("addPlugin function called");
-    runtime.OpenFileDialog({
+    runtime.openFileDialog({ // Corrected to camelCase
         title: "Select Plugin Zip File",
         filters: [{ displayName: "Zip Archives", pattern: "*.zip" }]
     }).then(zipPath => {
@@ -88,7 +86,7 @@
             AddPluginFromZip(zipPath)
                 .then(newPlugin => {
                     setStatus(`Plugin '${newPlugin.name}' added successfully!`, 3000);
-                    refreshPlugins(); // Refresh the list
+                    refreshPlugins();
                 })
                 .catch(err => {
                     console.error("AddPluginFromZip error:", err);
@@ -112,7 +110,7 @@
   function handleError(error) {
     statusMessage = '';
     errorMessage = error.toString();
-    setTimeout(() => errorMessage = '', 5000); // Clear error after 5s
+    setTimeout(() => errorMessage = '', 5000);
   }
 
 </script>
@@ -151,8 +149,8 @@
         </div>
     </div>
     <div class="control-group-buttons">
-        <button on:click={activate} disabled={!selectedProfile || !pluginPath}>Activate</button>
         <button on:click={launch} disabled={!aviutlPath}>Launch</button>
+        <button on:click={activate} disabled={!selectedProfile || !pluginPath}>Activate</button>
     </div>
   </div>
 
