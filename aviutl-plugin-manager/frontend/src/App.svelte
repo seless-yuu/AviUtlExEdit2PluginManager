@@ -76,6 +76,7 @@
 
   function addPlugin() {
     console.log("addPlugin function called");
+    console.log("Inspecting runtime object:", runtime);
     runtime.openFileDialog({ // Corrected to camelCase
         title: "Select Plugin Zip File",
         filters: [{ displayName: "Zip Archives", pattern: "*.zip" }]
