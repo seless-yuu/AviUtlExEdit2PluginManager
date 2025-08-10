@@ -1,26 +1,31 @@
-# Coding Agent Document
+# コーディングエージェントドキュメント
 
-## Project Overview
+## プロジェクト概要
 
-This repository contains a plugin manager for AviUtl, built using Wails (Go + Svelte).
+このリポジトリは、Wails (Go + Svelte) を使用して構築されたAviUtlのプラグインマネージャーです。
 
-## Core Philosophy
+## 基本方針
 
-This document is for coding agents working on this repository. Please adhere to the following guidelines. If you gain new knowledge or establish new procedures during your work, please update the documentation in the `docs/` directory to help future agents.
+このドキュメントは、このリポジトリで作業するコーディングエージェント向けです。以下のガイドラインに従ってください。
+作業中に新しい知見を得たり、新しい手順を確立した場合は、将来のエージェントのために`docs/`ディレクトリのドキュメントを更新してください。
 
-### Coding Guidelines
+### コミュニケーション言語
 
--   **UNIX Philosophy**: Strive to follow the UNIX philosophy. Keep functions and packages small, focused on a single responsibility, and reusable.
--   **Code Separation**: Treat backend code as a library as much as possible, cleanly separating it from the application layer (the Wails `app.go` file).
--   **Clarity**: Comments should explain the "why" behind the code, not the "what". The code itself should be as self-evident as possible.
+- **言語:** このプロジェクトに関するすべてのコミュニケーション（コミットメッセージ、チャット、ドキュメント等）は、原則として**日本語**を使用します。
 
-### Testing Guidelines
+### コーディングガイドライン
 
--   **TDD Approach**: When implementing new features or fixing bugs, please implement tests to facilitate iterative development and prevent regressions. The goal is to build a robust and reliable application.
+-   **UNIX哲学**: 可能な限りUNIX哲学に従います。関数やパッケージは、単一の責任に焦点を当て、小さく、再利用可能に保ちます。
+-   **コードの分離**: バックエンドのコードは可能な限りライブラリとして扱い、アプリケーションレイヤー（Wailsの`app.go`ファイル）から明確に分離します。
+-   **明瞭性**: コメントはコードが「何をしているか」ではなく、「なぜそうなっているか」を説明します。コード自体は、可能な限り自明であることが望ましいです。
 
-## Detailed Documentation
+### テストガイドライン
 
-For more specific guidelines and project information, please refer to the documents in the `docs/` directory.
+-   **TDDアプローチ**: 新機能の実装やバグ修正の際は、反復的な開発を促進し、リグレッションを防ぐためにテストを実装してください。堅牢で信頼性の高いアプリケーションを構築することが目標です。
 
--   **[Getting Started](./docs/GETTING_STARTED.md)**: For environment setup, key development commands, and testing procedures.
--   **[Branching Model](./docs/BRANCHING_MODEL.md)**: For the `git-flow` based branching strategy and naming conventions.
+## 詳細ドキュメント
+
+より具体的なガイドラインやプロジェクト情報については、`docs/`ディレクトリ内のドキュメントを参照してください。
+
+-   **[はじめに](./docs/GETTING_STARTED.md)**: 環境構築、主要な開発コマンド、テスト手順について。
+-   **[ブランチモデル](./docs/BRANCHING_MODEL.md)**: git-flowに基づいたブランチ戦略と命名規則について。

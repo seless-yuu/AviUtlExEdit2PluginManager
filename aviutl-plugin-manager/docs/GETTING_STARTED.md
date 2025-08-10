@@ -1,42 +1,42 @@
-# Getting Started
+# はじめに
 
-This document outlines the key commands for setting up and working on this project.
+このドキュメントは、このプロジェクトのセットアップと作業に関する主要なコマンドを概説します。
 
-## Environment Setup
+## 環境構築
 
-The frontend dependencies must be installed via `npm`. The Wails build process for the `main` package depends on the frontend being built first.
+フロントエンドの依存関係は`npm`を介してインストールする必要があります。`main`パッケージのWailsビルドプロセスは、最初にフロントエンドがビルドされていることに依存します。
 
-1.  **Navigate to the frontend directory:**
+1.  **フロントエンドのディレクトリに移動します:**
     ```bash
     cd frontend
     ```
 
-2.  **Install dependencies:**
+2.  **依存関係をインストールします:**
     ```bash
     npm install
     ```
-    This will install `vite` and other required packages into `node_modules`.
+    これにより、`vite`やその他の必要なパッケージが`node_modules`にインストールされます。
 
-## Running in Development Mode
+## 開発モードでの実行
 
-To run the application with hot-reloading for both the frontend and backend:
+フロントエンドとバックエンドの両方でホットリロードを使用してアプリケーションを実行するには：
 
-1.  **Navigate to the project root (`aviutl-plugin-manager`).**
-2.  **Run the dev command:**
+1.  **プロジェクトのルート (`aviutl-plugin-manager`) に移動します。**
+2.  **開発コマンドを実行します:**
     ```bash
     wails dev
     ```
 
-## Running Tests
+## テストの実行
 
-The backend has a suite of unit tests. To run all tests for all packages:
+バックエンドにはユニットテストスイートがあります。すべてのパッケージの全テストを実行するには：
 
-1.  **Navigate to the project root (`aviutl-plugin-manager`).**
-2.  **(Optional) Build the frontend first:** The test for the `main` package requires the `frontend/dist` directory to exist.
+1.  **プロジェクトのルート (`aviutl-plugin-manager`) に移動します。**
+2.  **(任意) 最初にフロントエンドをビルドします:** `main`パッケージのテストは、`frontend/dist`ディレクトリが存在する必要があります。
     ```bash
     cd frontend && npm run build && cd ..
     ```
-3.  **Run the Go tests:**
+3.  **Goのテストを実行します:**
     ```bash
     go test ./...
     ```

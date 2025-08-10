@@ -1,51 +1,75 @@
-# Branching Model
+# ブランチモデル
 
-This project follows the **Git Flow** branching model to ensure a structured and predictable development process.
+このプロジェクトは、構造化され予測可能な開発プロセスを保証するために、**Git Flow**ブランチモデルに従います。
 
-## Main Branches
+## メインブランチ
 
-The repository holds two main branches with an infinite lifetime:
+リポジトリは、無限のライフタイムを持つ2つのメインブランチを保持します：
 
--   `main`: This branch stores the official, stable release history. It should only be merged into from `develop` or `hotfix` branches.
--   `develop`: This is the main integration branch for new features. All feature branches are created from `develop` and merged back into it.
+-   `main`: 公式で安定したリリース履歴を保存します。このブランチには`develop`または`hotfix`ブランチからのみマージされるべきです。
+-   `develop`: 新機能のための主要な統合ブランチです。すべての機能ブランチは`develop`から作成され、`develop`にマージされます。
 
-## Supporting Branches
+## サポートブランチ
 
-Supporting branches are used to aid parallel development between team members, ease tracking of features, and assist in preparing for releases. Unlike the main branches, these branches always have a limited lifetime, since they will be removed eventually after the work is done.
+サポートブランチは、チームメンバー間の並行開発を支援し、機能の追跡を容易にし、リリースの準備を補助するために使用されます。メインブランチとは異なり、これらのブランチは作業が完了すると最終的に削除されるため、常に限られたライフタイムを持ちます。
 
-The different types of branches we may use are:
+使用する可能性のあるブランチの種類は次のとおりです：
 
 ### `feature/*`
 
--   **Purpose:** To develop new features.
--   **Branch from:** `develop`
--   **Merge back to:** `develop`
--   **Naming convention:** `feature/<short-description>` (e.g., `feature/add-plugin-sorting`)
+-   **目的:** 新機能の開発。
+-   **派生元:** `develop`
+-   **マージ先:** `develop`
+-   **命名規則:** `feature/<short-description>` (例: `feature/add-plugin-sorting`)
 
 ### `fix/*`
 
--   **Purpose:** To fix non-critical bugs in the `develop` branch.
--   **Branch from:** `develop`
--   **Merge back to:** `develop`
--   **Naming convention:** `fix/<issue-description>` (e.g., `fix/profile-save-error`)
+-   **目的:** `develop`ブランチの重要でないバグの修正。
+-   **派生元:** `develop`
+-   **マージ先:** `develop`
+-   **命名規則:** `fix/<issue-description>` (例: `fix/profile-save-error`)
 
 ### `docs/*`
 
--   **Purpose:** For adding, updating, or correcting documentation.
--   **Branch from:** `develop`
--   **Merge back to:** `develop`
--   **Naming convention:** `docs/<document-name>` (e.g., `docs/update-readme`)
+-   **目的:** ドキュメントの追加、更新、または修正。
+-   **派生元:** `develop`
+-   **マージ先:** `develop`
+-   **命名規則:** `docs/<document-name>` (例: `docs/update-readme`)
 
 ### `release/*`
 
--   **Purpose:** To prepare for a new production release. This branch allows for last-minute fixes and preparation.
--   **Branch from:** `develop`
--   **Merge back to:** `develop` and `main`
--   **Naming convention:** `release/vX.Y.Z` (e.g., `release/v0.2.0`)
+-   **目的:** 新しい本番リリースの準備。このブランチは、最終的な修正と準備を可能にします。
+-   **派生元:** `develop`
+-   **マージ先:** `develop` と `main`
+-   **命名規則:** `release/vX.Y.Z` (例: `release/v0.2.0`)
 
 ### `hotfix/*`
 
--   **Purpose:** To patch a critical bug in a production version.
--   **Branch from:** `main`
--   **Merge back to:** `develop` and `main`
--   **Naming convention:** `hotfix/<issue-description>`
+-   **目的:** 本番バージョンの重大なバグの修正。
+-   **派生元:** `main`
+-   **マージ先:** `develop` と `main`
+-   **命名規則:** `hotfix/<issue-description>`
+
+## AIエージェントの作業フロー
+
+複数のAIエージェントが同時に作業する際のコンフリクトを避けるため、各エージェントは自身の作業スペースとして`git worktree`を使用します。
+
+1.  作業を開始する前に、`develop`ブランチから新しい機能ブランチを作成します。
+    ```bash
+    git fetch origin
+    git branch feature/my-new-feature origin/develop
+    ```
+2.  そのブランチ用の新しいワークツリーを作成します。
+    ```bash
+    git worktree add ./worktrees/feature/my-new-feature feature/my-new-feature
+    ```
+3.  エージェントはそのワークツリー内で作業を行います。
+    ```bash
+    cd worktrees/feature/my-new-feature
+    # ...作業開始...
+    ```
+4.  作業が完了したら、ワークツリーを削除します。
+    ```bash
+    cd ../../..
+    git worktree remove ./worktrees/feature/my-new-feature
+    ```
