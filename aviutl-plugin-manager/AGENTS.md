@@ -1,17 +1,26 @@
+# Coding Agent Document
 
-# コーディングエージェントドキュメント
+## Project Overview
 
-このドキュメントはリポジトリのコーディングエージェント向けドキュメントです
+This repository contains a plugin manager for AviUtl, built using Wails (Go + Svelte).
 
-## 作業ガイドライン
+## Core Philosophy
 
-### コーディング
+This document is for coding agents working on this repository. Please adhere to the following guidelines. If you gain new knowledge or establish new procedures during your work, please update the documentation in the `docs/` directory to help future agents.
 
-・UNIX哲学にできるだけ従います
-・関数郡、クラス等、機能コードはなるべく小さくし再利用可能なようにします
-・記述するコードは可能な限りライブラリとして扱い、アプリケーションレイヤーと区別する事を意識します
-・コメントは作業履歴ではなく機能の説明で、コードは可能であれば自明である事が望ましいです
+### Coding Guidelines
 
-### テスト
+-   **UNIX Philosophy**: Strive to follow the UNIX philosophy. Keep functions and packages small, focused on a single responsibility, and reusable.
+-   **Code Separation**: Treat backend code as a library as much as possible, cleanly separating it from the application layer (the Wails `app.go` file).
+-   **Clarity**: Comments should explain the "why" behind the code, not the "what". The code itself should be as self-evident as possible.
 
-・機能を実装する場合、反復作業の円滑化の為にテストを実装します
+### Testing Guidelines
+
+-   **TDD Approach**: When implementing new features or fixing bugs, please implement tests to facilitate iterative development and prevent regressions. The goal is to build a robust and reliable application.
+
+## Detailed Documentation
+
+For more specific guidelines and project information, please refer to the documents in the `docs/` directory.
+
+-   **[Getting Started](./docs/GETTING_STARTED.md)**: For environment setup, key development commands, and testing procedures.
+-   **[Branching Model](./docs/BRANCHING_MODEL.md)**: For the `git-flow` based branching strategy and naming conventions.
