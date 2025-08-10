@@ -16,3 +16,5 @@ export function Greet(arg1:string):Promise<string>;
 export function LaunchAviUtl(arg1:string):Promise<void>;
 
 export function SaveProfile(arg1:profile.Profile):Promise<void>;
+
+export function SelectFile():Promise<string>;

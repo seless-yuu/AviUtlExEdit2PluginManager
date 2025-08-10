@@ -29,3 +29,7 @@ export function LaunchAviUtl(arg1) {
 export function SaveProfile(arg1) {
   return window['go']['main']['App']['SaveProfile'](arg1);
 }
+
+export function SelectFile() {
+  return window['go']['main']['App']['SelectFile']();
+}
