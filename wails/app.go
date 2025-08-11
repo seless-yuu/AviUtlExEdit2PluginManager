@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aviutl-plugin-manager/pkg/issues"
 	"aviutl-plugin-manager/pkg/library"
 	"aviutl-plugin-manager/pkg/profile"
 	"context"
@@ -17,6 +18,7 @@ type App struct {
 	ctx         context.Context
 	libraryDir  string
 	profilesDir string
+	issuesDir   string
 }
 
 // NewApp creates a new App application struct
@@ -48,6 +50,13 @@ func (a *App) startup(ctx context.Context) {
 	err = os.MkdirAll(a.profilesDir, os.ModePerm)
 	if err != nil {
 		panic(fmt.Sprintf("could not create profiles directory: %v", err))
+	}
+
+	// Setup issues directory
+	a.issuesDir = filepath.Join(configDir, "issues")
+	err = os.MkdirAll(a.issuesDir, os.ModePerm)
+	if err != nil {
+		panic(fmt.Sprintf("could not create issues directory: %v", err))
 	}
 }
 
@@ -122,4 +131,29 @@ func (a *App) SelectFile() (string, error) {
 		return "", err
 	}
 	return selection, nil
+}
+
+// GetIssues returns the list of all issues.
+func (a *App) GetIssues() ([]issues.Issue, error) {
+	return issues.ListIssues(a.issuesDir)
+}
+
+// CreateIssue creates a new issue.
+func (a *App) CreateIssue(title, description, category, priority string) (*issues.Issue, error) {
+	return issues.CreateIssue(a.issuesDir, title, description, category, priority)
+}
+
+// UpdateIssueStatus updates the status of an existing issue.
+func (a *App) UpdateIssueStatus(issueID, newStatus string) error {
+	return issues.UpdateIssueStatus(a.issuesDir, issueID, newStatus)
+}
+
+// GetIssue retrieves a specific issue by ID.
+func (a *App) GetIssue(issueID string) (*issues.Issue, error) {
+	return issues.GetIssue(a.issuesDir, issueID)
+}
+
+// DeleteIssue removes an issue.
+func (a *App) DeleteIssue(issueID string) error {
+	return issues.DeleteIssue(a.issuesDir, issueID)
 }
